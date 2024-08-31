@@ -8,7 +8,6 @@ import NavBar from "./NavBar";
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",
   variable: "--font-inter",
 });
 

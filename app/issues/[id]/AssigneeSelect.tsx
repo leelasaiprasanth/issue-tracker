@@ -6,8 +6,9 @@ import axios from "axios";
 import { User } from "next-auth";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "@/app/components/";
+import { Issue } from "@prisma/client";
 
-const AssigneeSelect = () => {
+const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
     data: user,
     error,
@@ -24,11 +25,19 @@ const AssigneeSelect = () => {
   if (error) return null;
 
   return (
-    <Select.Root>
+    <Select.Root
+      defaultValue={issue.assignedToUserId || ""}
+      onValueChange={(userId) => {
+        axios.patch("/api/issues/" + issue.id, {
+          assignedToUserId: userId || null,
+        });
+      }}
+    >
       <Select.Trigger placeholder="Assign..." />
       <Select.Content>
         <Select.Group>
           <Select.Label>Suggestions</Select.Label>
+          <Select.Item value="''">Unassigned</Select.Item>
           <Select.Separator />
           {user?.map((user) => (
             <Select.Item key={user.id} value={user.id}>
